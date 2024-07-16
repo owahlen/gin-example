@@ -10,12 +10,17 @@ import (
 )
 
 type User struct {
+	// inherit basic model fields like the ID by embedding the gorm.Model struct type
 	gorm.Model
+	// struct tags define gorm model constraints and json representation
 	Username string `gorm:"size:255;not null;unique" json:"username"`
 	Password string `gorm:"size:255;not null;" json:"-"`
-	Entries  []Entry
+	// one-to-many relationship to Entry entity
+	Entries []Entry
 }
 
+// Save stores the user this method is called on.
+// It returns the saved user and any error.
 func (user *User) Save() (*User, error) {
 	err := database.Database.Create(&user).Error
 	if err != nil {
@@ -24,8 +29,8 @@ func (user *User) Save() (*User, error) {
 	return user, nil
 }
 
+// GORM lifecycle hook called before the record is saved.
 func (user *User) BeforeSave(*gorm.DB) error {
-
 	passwordHash, err := bcrypt.GenerateFromPassword([]byte(user.Password), bcrypt.DefaultCost)
 	if err != nil {
 		return err

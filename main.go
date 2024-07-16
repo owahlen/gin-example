@@ -32,6 +32,7 @@ func loadDatabase() {
 }
 
 func serveApplication() {
+	port := "8080"
 	router := gin.Default()
 
 	publicRoutes := router.Group("/auth")
@@ -43,6 +44,6 @@ func serveApplication() {
 	protectedRoutes.POST("/entry", controller.AddEntry)
 	protectedRoutes.GET("/entry", controller.GetAllEntries)
 
-	router.Run(":8000")
-	fmt.Println("Server running on port 8000")
+	router.Run(":" + port)
+	fmt.Println("Server running on port " + port)
 }
